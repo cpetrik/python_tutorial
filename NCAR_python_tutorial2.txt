@@ -1,0 +1,165 @@
+
+mysci.py 1  =====================================================================
+
+# Initialize data variable
+data = []
+
+# Read the data file
+filename = "data/wxobs20170821.txt"
+
+with open(filename,'r') as datafile:
+    # Read first 3 lines (header)
+    for _ in range(3): # _ is a placeholder (could be i,j,etc.)
+        print(_)
+        datafile.readline() #reads a single line
+    # Read and parse the rest of the file
+    # creates a list of list of strings
+    for line in datafile: #line is a string
+        datum = line.split()
+        data.append(datum) #adds
+
+# DEBUG
+for datum in data:
+    print(datum)
+
+mysci.py #2 =====================================================================
+
+# Initialize data variable
+data = []
+
+# Read the data file
+filename = "data/wxobs20170821.txt"
+
+with open(filename,'r') as datafile:
+    # Read first 3 lines (header)
+    for _ in range(3):
+        print(_)
+        datafile.readline()
+    # Read and parse the rest of the file
+    # creates a list of list of strings
+    for line in datafile:
+        datum = line.split()
+        data.append(datum)
+
+# DEBUG
+print(data[0]) #1st element
+print(data[9]) #10th
+print(data[-1]) #last
+print(data[0:10]) 
+
+# DEBUG
+for datum in data[0:10]: 
+    print(datum)
+
+# DEBUG 
+print(data[8][4]) %first 2 elements of line 8 = 70.3
+print(data[8][4][0]) = 7
+
+# DEBUG
+print(data[8][4])
+print(data[8][:5])
+print(data[8][::2])
+
+Running results in
+70.3
+['8/20/17', '12:45a', '70.6', '70.8', '70.3']
+['8/20/17', '70.6', '70.3', '36.8', 'W', '10.0', '70.6', '67.1', '0.00', '0.000', '68.3', '44.9', '8.25', '117', '100.0']
+
+
+# DEBUG
+print(data[5:8][4]) #5th element from rows 5-8
+#does not work because not 4 elements long
+
+# DEBUG
+print(data[5:8][0])
+print(data[5]) #returns the same thing as above
+
+
+
+mysci.py #3 =====================================================================
+
+# Initialize data variable
+data = {'date':[], 'time':[], 'tempout':[]} #data dictionary with 3 lists
+time = data['time'] # a single
+
+# Read the data file
+filename = "data/wxobs20170821.txt"
+
+with open(filename,'r') as datafile:
+    # Read first 3 lines (header)
+    for _ in range(3):
+        print(_)
+        datafile.readline()
+    # Read and parse the rest of the file
+    for line in datafile:
+        split_line = line.split()
+        data['date'].append(split_line[0])
+        data['time'].append(split_line[1])
+        data['tempout'].append(split_line[2])
+
+# DEBUG
+print(data['time']) # all strings
+
+
+
+# Read and parse the rest of the file
+    for line in datafile:
+        split_line = line.split()
+        data['date'].append(split_line[0])
+        data['time'].append(split_line[1])
+        data['tempout'].append(float(split_line[2])) #creates a floating point value
+
+# DEBUG
+print(data['tempout']) # all numbers (not strings)
+
+
+mysci.py #4 =====================================================================
+
+# Create a column dictionary (names and indices to read)
+columns = {'date':0, 'time':1, 'tempout':2}
+
+# Data types for each colun (only if not string)
+types = {'tempout':float}
+
+# Initialize data variable
+data = {}
+for column in columns:
+    data[column] = []
+
+# Read the data file
+filename = "data/wxobs20170821.txt"
+
+with open(filename,'r') as datafile:
+    # Read first 3 lines (header)
+    for _ in range(3):
+        datafile.readline()
+
+    # Read and parse the rest of the file
+    for line in datafile:
+        split_line = line.split()
+        for column in columns:
+            i = columns[column]
+            t = types.get(column,str) #avoids error statements
+            value = t(split_line[i])
+            data[column].append(value)
+
+GIT ADDS from today ===================================================================
+
+(python_tutorial1) OM610-petrik:Python_tutorials cpetrik$ git add mysci.py 
+(python_tutorial1) OM610-petrik:Python_tutorials cpetrik$ git commit -m "refactoring data parsing code"
+[master c9e7219] refactoring data parsing code
+ 1 file changed, 15 insertions(+), 6 deletions(-)
+(python_tutorial1) OM610-petrik:Python_tutorials cpetrik$ git log --oneline
+c9e7219 (HEAD -> master) refactoring data parsing code
+b699a41 convert tempout to floats:
+6cdbbc3 parsing time-series
+ad37031 Parsing file
+d00edd0 text file of commands used today
+3302321 add script file
+6d4b2ab added sample data file
+(python_tutorial1) OM610-petrik:Python_tutorials cpetrik$
+
+
+
+
+

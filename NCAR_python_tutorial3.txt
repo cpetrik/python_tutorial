@@ -1,0 +1,177 @@
+
+mysci.py 1  =====================================================================
+
+# Create a column dictionary (names and indices to read)
+columns = {'date':0, 'time':1, 'tempout':2}
+
+# Data types for each colun (only if not string)
+types = {'tempout':float}
+
+# Initialize data variable
+data = {}
+for column in columns:
+    data[column] = []
+
+# Read the data file
+filename = "data/wxobs20170821.txt"
+
+with open(filename,'r') as datafile:
+    # Read first 3 lines (header)
+    for _ in range(3):
+        headerline = datafile.readline() #give header a name so can print
+        print(headerline) #print header to see which column is windspeed
+
+    # Read and parse the rest of the file
+    for line in datafile:
+        split_line = line.split()
+        for column in columns:
+            i = columns[column]
+            t = types.get(column,str)
+            value = t(split_line[i])
+            data[column].append(value)
+
+
+mysci.py 2  =====================================================================
+# Create a column dictionary (names and indices to read)
+columns = {'date':0, 'time':1, 'tempout':2, 'windspeed':7}
+
+# Data types for each colun (only if not string)
+types = {'tempout':float, 'windspeed':float}
+
+# Initialize data variable
+data = {}
+for column in columns:
+    data[column] = []
+
+# Read the data file
+filename = "data/wxobs20170821.txt"
+
+with open(filename,'r') as datafile:
+    # Read first 3 lines (header)
+    for _ in range(3):
+        datafile.readline()
+
+
+Python math 1  =====================================================================
+>>> 2+2
+4
+>>> 2-2
+0
+>>> 2/2
+1.0
+>>> 2*2
+4
+>>> 5/2
+2.5
+>>> 5//2
+2
+>>> 5%2
+1
+>>> 5**2
+25
+
+
+mysci.py 3  =====================================================================
+
+with open(filename,'r') as datafile:
+    # Read first 3 lines (header)
+    for _ in range(3):
+        datafile.readline()
+
+    # Read and parse the rest of the file
+    for line in datafile:
+        split_line = line.split()
+        for column in columns:
+            i = columns[column]
+            t = types.get(column,str)
+            value = t(split_line[i])
+            data[column].append(value)
+
+# Compute windchill index
+#define function, best practice to use a verb that describes what it does
+def compute_windchill(t,v):
+    a = 35.74
+    b = 0.6215
+    c = 35.75
+    d = 0.4275
+    
+    v16 = v ** 0.16
+
+    wci = a + (b*t) - (c*v16) + (d*t*v16)
+
+    return wci
+
+# Debug
+for i, j in zip([1,2], [3,4,5]):
+    print(i,j)
+
+
+mysci.py 4  =====================================================================
+
+# Compute windchill index
+def compute_windchill(t,v):
+    a = 35.74
+    b = 0.6215
+    c = 35.75
+    d = 0.4275
+
+    v16 = v ** 0.16
+
+    wci = a + (b*t) - (c*v16) + (d*t*v16)
+
+    return wci
+
+# Running the function to compute wci
+windchill = []
+for temp, windspeed in zip(data['tempout'],data['windspeed']):
+    windchill.append(compute_windchill(temp,windspeed))
+
+
+mysci.py 5  =====================================================================
+
+# Create a column dictionary (names and indices to read)
+columns = {'date':0, 'time':1, 'tempout':2, 'windspeed':7, 'windchill':12}
+
+# Data types for each colun (only if not string)
+types = {'tempout':float, 'windspeed':float, 'windchill':float}
+
+.
+.
+.
+
+#DEBUG
+for wc_data, wc_comp in zip(data['windchill'],windchill):
+    print(f'{wc_data:.5f} {wc_comp:.5f} {wc_data - wc_comp}') #formatting of string
+
+
+mysci.py 6  =====================================================================
+
+# Running the function to compute wci
+windchill = []
+for temp, windspeed in zip(data['tempout'],data['windspeed']):
+    windchill.append(compute_windchill(temp,windspeed))
+
+# Output comparison of data
+print('                ORIGINAL  COMPUTED') #header
+print(' DATE    TIME  WINDCHILL WINDCHILL DIFFERENCE') #header
+print('------- ------ --------- --------- ----------') #number of same as print lengths
+zip_data = zip(data['date'], data['time'], data['windchill'], windchill)
+for date, time, wc_orig, wc_comp in zip_data:
+    wc_diff = wc_orig - wc_comp
+    #string formatting so times take up same space
+    print(f'{date} {time:>6} {wc_orig:9.6f} {wc_comp:9.6f} {wc_diff:10.6f}')
+
+
+
+mysci.py 7  =====================================================================
+
+
+mysci.py 8  =====================================================================
+
+
+mysci.py 9  =====================================================================
+
+
+
+
+
