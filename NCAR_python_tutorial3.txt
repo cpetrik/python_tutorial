@@ -163,15 +163,16 @@ for date, time, wc_orig, wc_comp in zip_data:
 
 
 
-mysci.py 7  =====================================================================
+GIT  =====================================================================
 
-
-mysci.py 8  =====================================================================
-
-
-mysci.py 9  =====================================================================
-
-
-
+OM610-petrik:Python_tutorials cpetrik$ git commit -m "Renaming windchill script"
+[master 305da9b] Renaming windchill script
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ rename mysci.py => windchillcomp.py (100%)
+OM610-petrik:Python_tutorials cpetrik$ git remote add origin https://github.com/cpetrik/python_tutorial.git
+OM610-petrik:Python_tutorials cpetrik$ git remote -v
+origin	https://github.com/cpetrik/python_tutorial.git (fetch)
+origin	https://github.com/cpetrik/python_tutorial.git (push)
+OM610-petrik:Python_tutorials cpetrik$ git push origin master
 
 
