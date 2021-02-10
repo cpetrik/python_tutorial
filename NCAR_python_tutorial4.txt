@@ -1,4 +1,5 @@
 TERMINAL
+===================================================================== 
 The default interactive shell is now zsh.
 To update your account to use zsh, please run `chsh -s /bin/zsh`.
 For more details, please visit https://support.apple.com/kb/HT208050.
@@ -96,6 +97,7 @@ for date, time, hi_orig, hi_comp in zip_data:
 
 
 TERMINAL
+===================================================================== 
 (python_tutorial1) OM610-petrik:Python_tutorials cpetrik$ nano heatindexcomp.py 
 (python_tutorial1) OM610-petrik:Python_tutorials cpetrik$ git add heatindexcomp.py 
 (python_tutorial1) OM610-petrik:Python_tutorials cpetrik$ git commit -m "Updated heat index script"
@@ -140,7 +142,9 @@ def read_data(columns, types={}, filename="data/wxobs20170821.txt"):
 
     return data
 
+
 TERMINAL
+===================================================================== 
 (python_tutorial1) OM610-petrik:Python_tutorials cpetrik$ nano readdata.py 
 (python_tutorial1) OM610-petrik:Python_tutorials cpetrik$ git add readdata.py 
 (python_tutorial1) OM610-petrik:Python_tutorials cpetrik$ git commit -m "Wrote new readdata module"
@@ -150,6 +154,7 @@ TERMINAL
 
 
 windchill.py
+===================================================================== 
 from readdata import read_data
 
 # Create a column dictionary (names and indices to read)
@@ -165,6 +170,188 @@ for column in columns:
 
 # Read the data file
 data = read_data(columns, types)
+
+
+
+printing.py
+=====================================================================
+ def print_comparison(name, dates, times, orig_data, comp_data):
+    """
+    Print a comparison of two time series (original and computed)
+    Parameters:
+        name: string name for the data being compared (limited to 9 char)
+        dates: list of strings representing dates for each data
+        orig_data: list of original data (floats)
+        comp_data: list of computed data (floats)
+    """
+
+    # Output comparison of data
+    print('                ORIGINAL  COMPUTED')
+    print(f' DATE    TIME {name.upper():>9} {name.upper():>9} DIFFERENCE')
+    print('------- ------ --------- --------- ----------')
+    zip_data = zip(dates, times, orig_data, comp_data)
+    for date, time, orig, comp in zip_data:
+        diff = orig - comp
+        print(f'{date} {time:>6} {orig:9.6f} {comp:9.6f} {diff:10.6f}')
+
+
+
+computing.py
+=====================================================================
+def compute_windchill(t,v):
+    """
+    Compute the wind chill factor given temp and windspeed
+    NOTE: valid only for temps between -45F and +45F and windspeeds between
+          3 and 60 mph
+    Parameters:
+        t: temperature in F units (float)
+        v: wind speed in mph units (float)
+    """
+
+    a = 35.74
+    b = 0.6215
+    c = 35.75
+    d = 0.4275
+
+    v16 = v ** 0.16
+
+    wci = a + (b*t) - (c*v16) + (d*t*v16)
+
+    return wci
+
+
+def compute_heatindex(t,hum):
+    """
+    Compute the heat index from temp and humidity
+    Parameters:
+        t: temperature in F units (float)
+        hum: percent humidity (float)
+    """
+
+    a = -42.379
+    b = 2.04901523
+    c = 10.14333127
+    d = 0.22475541
+    e = 0.00683783
+    f = 0.05481717
+    g = 0.00122874
+    h = 0.00085282
+    i = 0.00000199
+
+    # relative humidity from percent to decimal
+    rh = hum / 100
+
+    hi = (a + (b * t) + (c * rh) + (d * t * rh) +
+        (e * t**2) + (f * rh**2) + (g * t**2 * rh)+
+        (h * t * rh**2) + (i * t**2 * rh**2))
+
+    return hi
+
+
+windchill.py
+=====================================================================
+from readdata import read_data
+from printing import print_comparison
+from computation import compute_windchill
+
+# Create a column dictionary (names and indices to read)
+columns = {'date':0, 'time':1, 'tempout':2, 'windspeed':7, 'windchill':12}
+
+# Data types for each colun (only if not string)
+types = {'tempout':float, 'windspeed':float, 'windchill':float}
+
+# Read the data file
+data = read_data(columns, types)
+
+# Compute windchill index
+# Running the function to compute wci
+windchill = []
+for temp, windspeed in zip(data['tempout'],data['windspeed']):
+    windchill.append(compute_windchill(temp,windspeed))
+
+# Output comparison of data
+print_comparison('WINDCHILL', data['date'], data['time'], data['windchill'],
+    windchill)
+
+
+windchill.py
+=====================================================================
+from mysci.readdata import read_data
+from mysci.printing import print_comparison
+from mysci.computation import compute_windchill
+
+# Create a column dictionary (names and indices to read)
+columns = {'date':0, 'time':1, 'tempout':2, 'windspeed':7, 'windchill':12}
+
+# Data types for each colun (only if not string)
+types = {'tempout':float, 'windspeed':float, 'windchill':float}
+
+# Read the data file
+data = read_data(columns, types)
+
+# Compute windchill index
+# Running the function to compute wci
+windchill = []
+for temp, windspeed in zip(data['tempout'],data['windspeed']):
+    windchill.append(compute_windchill(temp,windspeed))
+
+# Output comparison of data
+print_comparison('WINDCHILL', data['date'], data['time'], data['windchill'],
+    windchill)
+
+
+
+heatindex.py
+=====================================================================
+
+from readdata import read_data
+from printing import print_comparison
+from computation import compute_heatindex
+
+# Create a column dictionary (names and indices to read)
+columns = {'date':0, 'time':1, 'tempout':2, 'humout':5, 'heatindex':13}
+
+# Data types for each colun (only if not string)
+types = {'tempout':float, 'humout':float, 'heatindex':float}
+
+# Read the data file
+data = read_data(columns, types)
+
+# Running the function to compute wci
+heatindex = []
+for temp, humout in zip(data['tempout'],data['humout']):
+    heatindex.append(compute_heatindex(temp,humout))
+
+# Output comparison of data
+print_comparison('HEAT INDX', data['date'], data['time'], data['heatindex'],
+    heatindex)
+
+
+heatindex.py
+===================================================================== 
+from mysci.readdata import read_data
+from mysci.printing import print_comparison
+from mysci.computation import compute_heatindex
+
+# Create a column dictionary (names and indices to read)
+columns = {'date':0, 'time':1, 'tempout':2, 'humout':5, 'heatindex':13}
+
+# Data types for each colun (only if not string)
+types = {'tempout':float, 'humout':float, 'heatindex':float}
+
+# Read the data file
+data = read_data(columns, types)
+
+# Running the function to compute wci
+heatindex = []
+for temp, humout in zip(data['tempout'],data['humout']):
+    heatindex.append(compute_heatindex(temp,humout))
+
+# Output comparison of data
+print_comparison('HEAT INDX', data['date'], data['time'], data['heatindex'],
+    heatindex)
+
+
 
 
 

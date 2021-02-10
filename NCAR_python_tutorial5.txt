@@ -1,0 +1,127 @@
+TERMINAL
+===================================================================== 
+(base) OM610-petrik:Python_tutorials cpetrik$ conda activate python_tutorial1
+(python_tutorial1) OM610-petrik:Python_tutorials cpetrik$
+(python_tutorial1) OM610-petrik:Python_tutorials cpetrik$ ls
+NCAR Python Tutorial.pdf	__pycache__
+NCAR_python_tutorial1.txt	data
+NCAR_python_tutorial2.txt	heatindexcomp.py
+NCAR_python_tutorial3.txt	mysci
+NCAR_python_tutorial4.txt	windchillcomp.py
+NCAR_python_tutorial5.txt
+(python_tutorial1) OM610-petrik:Python_tutorials cpetrik$ cd mysci/
+(python_tutorial1) OM610-petrik:mysci cpetrik$ ls
+__init__.py	__pycache__	computation.py	printing.py	readdata.py
+(python_tutorial1) OM610-petrik:Python_tutorials cpetrik$ nano mysci/computation.py 
+(python_tutorial1) OM610-petrik:Python_tutorials cpetrik$ git add mysci/computation.py 
+(python_tutorial1) OM610-petrik:Python_tutorials cpetrik$ git commit -m "Function for computing DPI"
+[master 86a0a2d] Function for computing DPI
+ 1 file changed, 24 insertions(+)
+(python_tutorial1) OM610-petrik:Python_tutorials cpetrik$ cp heatindexcomp.py dewpointtempcomp.py
+(python_tutorial1) OM610-petrik:Python_tutorials cpetrik$ nano dewpointtempcomp.py 
+(python_tutorial1) OM610-petrik:Python_tutorials cpetrik$ python dewpointtempcomp.py 
+
+
+
+heatindexcomp.py 1  
+=====================================================================  
+# Read the data file
+data = read_data(columns, types)
+
+# Running the function to compute wci
+heatindex = [compute_heatindex(t,h) for t, h in zip(data['tempout'],data['humout'])]
+ 
+
+windchill.py 
+===================================================================
+# Read the data file
+data = read_data(columns, types=types)
+
+# Compute windchill index
+windchill = [compute_windchill(t,w) for t, w in zip(data['tempout'],data[windspeed])]
+    
+
+computing.py 1
+=====================================================================
+import math
+
+def compute_windchill(t,v):
+.
+.
+.
+def compute_dewpoint(t,h):
+    """
+    Compute the dew point temp given the temp and humidity
+    Parameters:
+        t: temp in units F (float)
+        h: relative humidity in units % (float)
+    """
+
+    tempC = (t-32) * 5 / 9 #Convert from degF to degC
+    rh = h / 100
+
+    b = 18.678
+    c = 257.14 # units degC
+
+    gamma = math.log(rh) + (b * tempC) / (c + tempC)
+    tdp = c * gamma / (b - gamma)
+
+    tdp_F = 9/5 * tdp + 32 #Convert back to degF
+    return tdp_F
+
+
+
+dewpointtempcomp.py 
+==============================================================
+from mysci.readdata import read_data
+from mysci.printing import print_comparison
+from mysci.computation import compute_dewpoint
+
+# Create a column dictionary (names and indices to read)
+columns = {'date':0, 'time':1, 'tempout':2, 'humout':5, 'dewpt':6}
+
+# Data types for each colun (only if not string)
+types = {'tempout':float, 'humout':float, 'dewpt':float}
+
+# Read the data file
+data = read_data(columns, types=types)
+
+# Running the function to compute wci
+dewpointtemp = [compute_dewpoint(t,h) for t, h in zip(data['tempout'],
+    data['humout'])]
+
+# Output comparison of data
+print_comparison('DEW PT', data['date'], data['time'], data['dewpt'],
+    dewpointtemp)
+
+
+mathtest.py
+=================================
+import math as m
+
+e = m.e
+print(e)
+
+y_natural = m.log(e)
+y_base10 = m.log(e,10) #changing base of nat log
+y_log10 = m.log10(e) #more accurate than changing base of nat log
+
+print(y_natural,y_base10, y_log10)
+
+deg = 180
+rads = degs * m.pi / 180
+rads_fn = m.radians(deg)
+print(deg, rads, rads_fn)
+
+cos_deg = m.cos(deg)
+cod_rad = m.cos(m.radians(deg))
+print(cos_deg,cos_rad)
+
+print(m.factorial(5))
+
+
+
+
+
+
+
